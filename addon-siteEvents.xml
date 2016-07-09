@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="siteEvents" title="[kiror] Site events" version_string="0.0" version_id="0" url="https://github.com/adlerosn/" install_callback_class="siteEvents_setup" install_callback_method="install" uninstall_callback_class="siteEvents_setup" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners/>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="siteeventsgrp" display_order="1" debug_only="0"/>
+    <option option_id="noDisplayableEvents" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>No current events.</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="siteeventsgrp" display_order="2"/>
+    </option>
+    <option option_id="numRecentViewableEvents" edit_format="spinbox" data_type="integer" can_backup="1">
+      <default_value>5</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="siteeventsgrp" display_order="1"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups>
+      <permission_group permission_group_id="siteEventGrp"/>
+    </permission_groups>
+    <permissions>
+      <permission permission_group_id="siteEventGrp" permission_id="manageEvents" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="9"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewOldies" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="1"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewanyone" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="1"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewhighstaff" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="6"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewlowstaff" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="4"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewmediumstaff" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="5"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewregistered" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="2"/>
+      <permission permission_group_id="siteEventGrp" permission_id="viewvip" permission_type="flag" default_value="unset" interface_group_id="siteEventIface" display_order="3"/>
+    </permissions>
+    <interface_groups>
+      <interface_group interface_group_id="siteEventIface" display_order="1"/>
+    </interface_groups>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_siteeventsgrp" version_id="0" version_string="0.0"><![CDATA[[kiror] Site Events]]></phrase>
+    <phrase title="option_group_siteeventsgrp_description" version_id="0" version_string="0.0"><![CDATA[Options for site events.]]></phrase>
+    <phrase title="option_noDisplayableEvents" version_id="0" version_string="0.0"><![CDATA[No displayable events message]]></phrase>
+    <phrase title="option_noDisplayableEvents_explain" version_id="0" version_string="0.0"><![CDATA[<i>Use HTML</i>]]></phrase>
+    <phrase title="option_numRecentViewableEvents" version_id="0" version_string="0.0"><![CDATA[Viewable events in start page]]></phrase>
+    <phrase title="option_numRecentViewableEvents_explain" version_id="0" version_string="0.0"><![CDATA[Number of the maximum of events present in initial page's sidebar.]]></phrase>
+    <phrase title="permission_group_siteEventGrp" version_id="0" version_string="0.0"><![CDATA[[kiror] Site Events]]></phrase>
+    <phrase title="permission_interface_siteEventIface" version_id="0" version_string="0.0"><![CDATA[[kiror] Site Events]]></phrase>
+    <phrase title="permission_siteEventGrp_manageEvents" version_id="0" version_string="0.0"><![CDATA[Can manage events]]></phrase>
+    <phrase title="permission_siteEventGrp_viewanyone" version_id="0" version_string="0.0"><![CDATA[View directed to anyone]]></phrase>
+    <phrase title="permission_siteEventGrp_viewhighstaff" version_id="0" version_string="0.0"><![CDATA[View directed to high staff and lower]]></phrase>
+    <phrase title="permission_siteEventGrp_viewlowstaff" version_id="0" version_string="0.0"><![CDATA[View directed to low staff and lower]]></phrase>
+    <phrase title="permission_siteEventGrp_viewmediumstaff" version_id="0" version_string="0.0"><![CDATA[View directed to medium staff and lower]]></phrase>
+    <phrase title="permission_siteEventGrp_viewOldies" version_id="0" version_string="0.0"><![CDATA[View old events]]></phrase>
+    <phrase title="permission_siteEventGrp_viewregistered" version_id="0" version_string="0.0"><![CDATA[View directed to registered and lower]]></phrase>
+    <phrase title="permission_siteEventGrp_viewvip" version_id="0" version_string="0.0"><![CDATA[View directed to VIPs and lower]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="public">
+      <prefix original_prefix="siteevents" class="siteEvents_router" build_link="all"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates>
+    <template title="kiror_site_events_add" version_id="0" version_string="0.0"><![CDATA[<xen:title>Events: adding an event</xen:title>
+
+<form action="{xen:link 'siteevents'}" class="xenForm AutoValidator" method="post" 
+	data-optInOut="optIn"
+	data-redirect="true">
+	<input type="hidden" name="action" value="submitNew" />
+	
+	<dl class="ctrlUnit">
+		<dt><label>Title:</label></dt>
+		<dd>
+			<ul>
+				<li><input type="text" name="title" value="" maxlength="50" class="textCtrl" autofocus="true" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>URL:</label></dt>
+		<dd>
+			<ul>
+				<li><input type="text" name="url" value="" class="textCtrl" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>Start:</label></dt>
+		<dd>
+			<ul>
+				<li>Date: <select name="start_yr" class="textCtrl" required style="width: 20%;">
+					<xen:foreach loop="$years" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select>
+					/
+					<select name="start_mo" class="textCtrl" required style="width: 35%;">
+					<xen:foreach loop="$months" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select>
+					/
+					<select name="start_dy" class="textCtrl" required style="width: 15%;">
+					<xen:foreach loop="$days" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select></li>
+					
+				<li>Time: <select name="start_hr" class="textCtrl" required style="width: 50%;">
+					<xen:foreach loop="$hours" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select>
+					:
+					<select name="start_mn" class="textCtrl" required style="width: 15%;">
+					<xen:foreach loop="$minutes" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select></li>
+				<li>Timezone: <select name="start_tz" class="textCtrl" required style="width: 25%;">
+					<xen:foreach loop="$timezones" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>End:</label></dt>
+		<dd>
+			<ul>
+				<li>Date: <select name="end_yr" class="textCtrl" required style="width: 20%;">
+					<xen:foreach loop="$years" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select>
+					/
+					<select name="end_mo" class="textCtrl" required style="width: 35%;">
+					<xen:foreach loop="$months" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select>
+					/
+					<select name="end_dy" class="textCtrl" required style="width: 15%;">
+					<xen:foreach loop="$days" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select></li>
+					
+				<li>Time: <select name="end_hr" class="textCtrl" required style="width: 50%;">
+					<xen:foreach loop="$hours" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select>
+					:
+					<select name="end_mn" class="textCtrl" required style="width: 15%;">
+					<xen:foreach loop="$minutes" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select></li>
+				<li>Timezone: <select name="end_tz" class="textCtrl" required style="width: 25%;">
+					<xen:foreach loop="$timezones" key="$key" value="$value">
+					<option value="{$key}">{$value}</option>
+					</xen:foreach></select></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	
+	
+	<dl class="ctrlUnit">
+		<dt><label>Visibility:</label></dt>
+		<dd>
+			<ul>
+				
+  <li><input type="radio" name="vis" value="6"> High staff</li>
+  <li><input type="radio" name="vis" value="5"> Medium staff</li>
+  <li><input type="radio" name="vis" value="4"> Low staff</li>
+  <li><input type="radio" name="vis" value="3"> VIP</li>
+  <li><input type="radio" name="vis" value="2"> Registered</li>
+  <li><input type="radio" name="vis" value="1" checked="checked"> Anyone</li>
+  				
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd><input type="submit" value="Add event" accesskey="s" class="button primary" /></dd>
+	</dl>
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="kiror_site_events_add_review" version_id="0" version_string="0.0"><![CDATA[<xen:title>Events: adding an event</xen:title>
+<h3 class="subHeading">Please confirm informed data:</h3>
+<form action="{xen:link 'siteevents'}" class="xenForm AutoValidator" method="post" 
+	data-optInOut="optIn"
+	data-redirect="true">
+	<input type="hidden" name="action" value="submitChecked" />
+	
+	<dl class="ctrlUnit">
+		<dt><label>Title:</label></dt>
+		<dd>
+			<ul>
+				<li>{$title}<input type="hidden" name="title" value="{$title}" maxlength="50" class="textCtrl" autofocus="true" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>URL:</label></dt>
+		<dd>
+			<ul>
+				<li><a href="{$url}" target="_blank">{$url}</a><input type="hidden" name="url" value="{$url}" class="textCtrl" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>Start:</label></dt>
+		<dd>
+			<ul>
+				<li>{$startstr}<input type="hidden" name="start" value="{$start}" class="textCtrl" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>End:</label></dt>
+		<dd>
+			<ul>
+				<li>{$endstr}<input type="hidden" name="end" value="{$end}" class="textCtrl" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt><label>Visibility:</label></dt>
+		<dd>
+			<ul>
+				<li>{$visstr}<input type="hidden" name="vis" value="{$vis}" class="textCtrl" required /></li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd>
+			<input type="submit" value="Add event" accesskey="s" class="button primary" />
+			<a class="button" href="{xen:link 'siteevents'}">Cancel</a>
+		</dd>
+	</dl>
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="kiror_site_events_confirm_delete" version_id="0" version_string="0.0"><![CDATA[<xen:title>Delete event?</xen:title>
+
+Title: {$event.descr} <br />
+URL: <a href="{$event.infourl}">{$event.infourl}</a> <br />
+Start: {$startstr2}, {xen:raw $startstr1} <br />
+End: {$endstr2}, {xen:raw $endstr1} <br />
+<br />
+<p>
+Are you sure you want to delete this event?
+</p>
+<p>
+<a class="button" href="{xen:link 'siteevents','','action=confirmDel','eid={$eid}'}">Delete</a>
+<a class="button" href="{xen:link 'siteevents'}">Cancel</a>
+</p>]]></template>
+    <template title="kiror_site_events_view" version_id="0" version_string="0.0"><![CDATA[<xen:title>{xen:if '{$hidingOldies}','Events','All events'}</xen:title>
+<xen:require css="site_events.css" />
+
+<xen:if is="{$visitor.permissions.siteEventGrp.manageEvents}">
+	<a class="button" href="{xen:link 'siteevents','','action=create'}">Create new event</a>
+</xen:if>
+
+<xen:if is="{$visitor.permissions.siteEventGrp.viewOldies} OR {$visitor.permissions.siteEventGrp.manageEvents}">
+	<xen:if is="{$hidingOldies}">
+		<a class="button" href="{xen:link 'siteevents','','old=1'}">Show old events</a>
+	<xen:else />
+		<a class="button" href="{xen:link 'siteevents'}">Hide old events</a>
+	</xen:if>
+</xen:if>
+
+<div class="clickerColumns oneColumns">
+	<xen:foreach loop="$putinloop" value="$item">
+		<li class="{xen:if '{$visitor.permissions.siteEventGrp.manageEvents}','primaryContent'} {xen:if '{$item.happening}','active'}"><a href="{$item.infourl}" target="_blank">
+			<span style="margin-left: 0px;" class="title">
+				{$item.descr}
+			</span>
+			<span style="margin-left: 0px;" class="description">
+				Start: <xen:callback class="siteEvents_sharedStatic" method="renderDateFromInt" params="{xen:array 'date={$item.starttime}'}"></xen:callback>.
+				<br />
+				End: <xen:callback class="siteEvents_sharedStatic" method="renderDateFromInt" params="{xen:array 'date={$item.endtime}'}"></xen:callback>.
+			</span>
+			
+				<xen:if is="{$canDelete}">
+					<a href="{xen:link 'siteevents','','action=delete','eid={$item.eventid}'}" style="display: block;
+							  float: left;">
+						<span title="Delete" style="display: block;
+									    float: left;
+									    width: 16px;
+									    height: 16px;
+									    background: transparent url('styles/default/xenforo/permissions/deny.png') no-repeat center center;
+									    "></span>
+						Delete
+					</a>
+				</xen:if>
+		</a></li>
+	</xen:foreach>
+</div>]]></template>
+    <template title="sidebar_site_events" version_id="0" version_string="0.0"><![CDATA[<!-- block: forum_events -->
+<xen:require css="site_events.css" />
+
+<xen:if is="{$visitor.permissions.siteEventGrp.viewanyone} OR 
+	    {$visitor.permissions.siteEventGrp.viewregistered} OR 
+	    {$visitor.permissions.siteEventGrp.viewvip} OR 
+	    {$visitor.permissions.siteEventGrp.viewlowstaff} OR 
+	    {$visitor.permissions.siteEventGrp.viewmediumstaff} OR 
+	    {$visitor.permissions.siteEventGrp.viewhighstaff} OR 
+	    {$visitor.permissions.siteEventGrp.manageEvents}">
+<div class="section">
+	<div class="secondaryContent eventList" id="eventList">
+		<h3>Events</h3>
+		<xen:callback class="siteEvents_sharedStatic" method="renderSideBarEvents" params="{xen:array 'uid={$visitor.user_id}'}"></xen:callback>
+		<a href="{xen:link 'siteevents'}" class="footnote">All events</a>
+	</div>
+</div>
+</xen:if>
+<!-- end block: forum_events -->]]></template>
+    <template title="site_events.css" version_id="0" version_string="0.0"><![CDATA[.clickerColumns
+{
+	overflow: hidden; zoom: 1;
+	padding: 0;
+}
+
+	.clickerColumns li
+	{
+		float: left;
+		width: 33%;
+	}
+	
+		.clickerColumns.twoColumns li
+		{
+			width: 49.5%;
+		}
+	
+		.clickerColumns.oneColumns li
+		{
+			width: 100%;
+		}
+		
+		.clickerColumns.threeColumns li
+		{
+			width: 33%;
+		}
+		
+		.clickerColumns.fourColumns li
+		{
+			width: 24.5%;
+		}
+	
+		.clickerColumns li a
+		{
+			margin: 3px;
+			display: block;
+			padding: 5px 10px;
+			border-radius: 5px;
+			overflow: hidden; zoom: 1;
+		}
+		
+		.clickerColumns li a:hover
+		{
+			background-color: {xen:property primaryLighterStill};
+			text-decoration: none;
+		}
+		
+		.clickerColumns li.active
+		{
+			background-color: {xen:property primaryLighterStill};
+			text-decoration: none;
+			border-radius: 5px;
+		}
+		
+		.clickerColumns .icon
+		{
+			float: left;
+			display: block;
+			width: 64px;
+			height: 64px;
+			background: {xen:property primaryLighter};
+			border: 1px solid {xen:property primaryLighter};
+			border-radius: 5px;
+			box-shadow: 2px 2px 6px rgba(0,0,0, 0.25);
+		}
+		
+			.styleChooser .icon
+			{
+				background-image: url('{xen:property imagePath}/xenforo/widgets/style-preview.png');
+			}
+		
+		.clickerColumns .title,
+		.clickerColumns .description
+		{
+			margin-left: 76px;
+			display: block;
+		}
+		
+		.clickerColumns .title
+		{
+			font-size: 11pt;
+		}
+		
+			.clickerColumns .unselectable .title:after
+			{
+				content: " *";
+			}
+		
+		.clickerColumns .description
+		{
+			color: {xen:property mutedTextColor};
+			font-size: 11px;
+		}]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="forum_list" modification_key="addeventsidebar" description="Add another sidebar for events." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<!-- end block: forum_stats -->]]></find>
+      <replace><![CDATA[$0
+<xen:include template="sidebar_site_events" />]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
